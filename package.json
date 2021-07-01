@@ -19,5 +19,11 @@
   "bugs": {
     "url": "https://github.com/stiftelsen-effekt/norwegian-workdays/issues"
   },
-  "homepage": "https://github.com/stiftelsen-effekt/norwegian-workdays#readme"
+  "homepage": "https://github.com/stiftelsen-effekt/norwegian-workdays#readme",
+  "dependencies": {
+    "luxon": "^1.27.0"
+  },
+  "devDependencies": {
+    "jest": "^27.0.6"
+  }
 }

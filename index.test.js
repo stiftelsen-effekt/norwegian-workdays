@@ -1,0 +1,2 @@
+const workingDays = require('./index')
+
