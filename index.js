@@ -6,15 +6,16 @@ module.exports = {
      */
     isWorkingDay(inputDate) {
         // Month
-        const month = date.getMonth()
+        const month = inputDate.getMonth()
         // Date
-        const date = date.getDate()
+        const date = inputDate.getDate()
         // Day of week (Sunday - Saturday : 0 - 6)
-        const weekday = date.getDay()
+        const weekday = inputDate.getDay()
 
         /**
          * Saturday and sundays
          */
+        
         if (weekday === 6 || weekday === 0)
             return false
 
@@ -27,8 +28,9 @@ module.exports = {
         /**
          * Labour Day and Constitution Day
          */
-        if (month === 4 && (date === 1 || 17))
+        if (month === 4 && (date === 1 || date === 17)){
             return false
+        }
 
         /**
          * Christmas Day and Boxing Day
@@ -53,20 +55,39 @@ module.exports = {
          * We mutate the easter sunday object, thus further calls
          * to setDate are relative to the latest mutation
          */
-        if (easter.setDate(easterSunday.getDate() - 3))
+        easter.setDate(easter.getDate() - 3)
+        if (inputDate.getTime() === easter.getTime())
             return false
         
         /**
          * Good Friday
          */
-        if (easter.setDate(easter.getDate() + 1))
+        easter.setDate(easter.getDate() + 1)
+        if (inputDate.getTime() === easter.getTime())
             return false
 
         /**
          * Easter Monday
          */
-        if (easter.setDate(easter.getDate() + 3))
+        easter.setDate(easter.getDate() + 3)
+        if (inputDate.getTime() === easter.getTime())
             return false
+
+        /**
+         * Ascension Day
+         */
+        easter.setDate(easter.getDate() + 38)
+        if (inputDate.getTime() === easter.getTime())
+            return false
+
+        /**
+         * Whit Monday
+         */
+        easter.setDate(easter.getDate() + 11)
+        if (inputDate.getTime() === easter.getTime())
+            return false
+
+        return true;
     },
 
     /**
@@ -76,30 +97,33 @@ module.exports = {
      */
     getEasterSunday(year) {
         try {
-            y = Number( y );
-            if ( y != y ) { 
+            year = Number( year );
+            if ( year != year ) { 
                 throw new TypeError( "Value must be a number." );
             }
-            else if ( y > 275760 || y < -271820 ) {
+            else if ( year > 275760 || year < -271820 ) {
                 throw new RangeError( "Value be between -271820 and 275760 due to technical limitations of Date constructor." );
             }
         }
         catch ( e ) { console.error( e ); }
     
-        y = Math.floor( y );
-        var c = Math.floor( y / 100 );
-        var n = y - 19 * Math.floor( y / 19 );
+        year = Math.floor( year );
+        var c = Math.floor( year / 100 );
+        var n = year - 19 * Math.floor( year / 19 );
         var k = Math.floor( ( c - 17 ) / 25 );
         var i = c - Math.floor( c / 4 ) - Math.floor( ( c - k ) / 3 ) + 19 * n + 15;
         i = i - 30 * Math.floor( i / 30 );
         i = i - Math.floor( i / 28 ) * ( 1 - Math.floor( i / 28 ) * Math.floor( 29 / ( i + 1 ) ) * Math.floor( ( 21 - n ) / 11 ) );
-        var j = y + Math.floor( y / 4 ) + i + 2 - c + Math.floor( c / 4 );
+        var j = year + Math.floor( year / 4 ) + i + 2 - c + Math.floor( c / 4 );
         j = j - 7 * Math.floor( j / 7 );
         var l = i - j;
         var m = 3 + Math.floor( ( l + 40 ) / 44 );
+        m = m.toString().padStart(2, '0')
         var d = l + 28 - 31 * Math.floor( m / 4 );
-        var z = new Date();
-        z.setFullYear( y, m-1, d );
+        d = d.toString().padStart(2, '0')
+        var z = new Date(`${year}-${m}-${d}`)
+
+    
         return z;
     }
 }
