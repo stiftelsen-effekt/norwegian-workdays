@@ -1,0 +1,23 @@
+{
+  "name": "norwegian-workdays",
+  "version": "1.0.0",
+  "description": "A package to determine norwegian workdays",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stiftelsen-effekt/norwegian-workdays.git"
+  },
+  "keywords": [
+    "norway",
+    "workdays"
+  ],
+  "author": "Stiftelsen Effekt",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stiftelsen-effekt/norwegian-workdays/issues"
+  },
+  "homepage": "https://github.com/stiftelsen-effekt/norwegian-workdays#readme"
+}
