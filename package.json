@@ -1,6 +1,6 @@
 {
   "name": "norwegian-workdays",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A package to determine norwegian workdays",
   "main": "index.js",
   "scripts": {

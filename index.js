@@ -1,7 +1,7 @@
 module.exports = {
     /**
      * Checks wether a certain date is a working day
-     * @param {Date} date 
+     * @param {Date} inputDate 
      * @returns {boolean} 
      */
     isWorkingDay(inputDate) {
