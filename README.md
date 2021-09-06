@@ -1,7 +1,7 @@
-![npm](https://img.shields.io/npm/v/norwegian-workdays)
-
 # Norwegian workdays
 Determines norwegian workdays
+
+[![npm](https://img.shields.io/npm/v/norwegian-workdays)](https://www.npmjs.com/package/norwegian-workdays)
 
 ## Usage 
 ```
