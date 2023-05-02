@@ -55,4 +55,7 @@ test('25.12.15 is not a working date', () => {
     expect(workingDays.isWorkingDay(new Date('2015-12-25'))).toBe(false);
 });
 
-
+// Testing ascension day with a time set
+test('18.05.23 is not a working date', () => {
+    expect(workingDays.isWorkingDay(new Date('2023-05-18T08:00:00.000Z'))).toBe(false);
+});

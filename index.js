@@ -47,7 +47,8 @@ module.exports = {
         /**
          * Input day is Easter Sunday
          */
-        if (inputDate.getTime() === easter.getTime())
+        // Use ISO8601 date format to compare dates
+        if (inputDate.toDateString() === easter.toDateString())
             return false
 
         /**
@@ -56,35 +57,35 @@ module.exports = {
          * to setDate are relative to the latest mutation
          */
         easter.setDate(easter.getDate() - 3)
-        if (inputDate.getTime() === easter.getTime())
+        if (inputDate.toDateString() === easter.toDateString())
             return false
         
         /**
          * Good Friday
          */
         easter.setDate(easter.getDate() + 1)
-        if (inputDate.getTime() === easter.getTime())
+        if (inputDate.toDateString() === easter.toDateString())
             return false
 
         /**
          * Easter Monday
          */
         easter.setDate(easter.getDate() + 3)
-        if (inputDate.getTime() === easter.getTime())
+        if (inputDate.toDateString() === easter.toDateString())
             return false
 
         /**
          * Ascension Day
          */
         easter.setDate(easter.getDate() + 38)
-        if (inputDate.getTime() === easter.getTime())
+        if (inputDate.toDateString() === easter.toDateString())
             return false
 
         /**
          * Whit Monday
          */
         easter.setDate(easter.getDate() + 11)
-        if (inputDate.getTime() === easter.getTime())
+        if (inputDate.toDateString() === easter.toDateString())
             return false
 
         return true;
