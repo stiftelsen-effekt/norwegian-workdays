@@ -21,7 +21,9 @@ function toCalendarDay(date, timeZone) {
     return new Date(part('year'), part('month') - 1, part('day'))
 }
 
-module.exports = {
+// Methods refer to each other through this object rather than `this`, so they also work when
+// destructured, e.g. `const { isWorkingDay } = require("norwegian-workdays")`
+const workdays = {
     /**
      * Checks wether a certain date is a working day
      * @param {Date} inputDate
@@ -69,7 +71,7 @@ module.exports = {
          * We need to know which date easter sunday falls on
          * to calculate the remaining holidays
          */
-        const easter = this.getEasterSunday(day.getFullYear())
+        const easter = workdays.getEasterSunday(day.getFullYear())
 
         /**
          * Input day is Easter Sunday
@@ -135,7 +137,7 @@ module.exports = {
         let remaining = workingDays
         while (remaining > 0) {
             day.setDate(day.getDate() + 1)
-            if (this.isWorkingDay(day)) remaining--
+            if (workdays.isWorkingDay(day)) remaining--
         }
 
         return day
@@ -176,3 +178,5 @@ module.exports = {
         return new Date(year, m - 1, d)
     }
 }
+
+module.exports = workdays

@@ -125,3 +125,9 @@ test('rejects negative or fractional working days', () => {
     expect(() => workingDays.addWorkingDays(new Date(), -1)).toThrow(RangeError);
     expect(() => workingDays.addWorkingDays(new Date(), 1.5)).toThrow(RangeError);
 });
+
+test('works when destructured', () => {
+    const { isWorkingDay, addWorkingDays } = require('./index');
+    expect(isWorkingDay(new Date(2026, 3, 3))).toBe(false);
+    expect(addWorkingDays(new Date(2026, 9, 16), 1)).toStrictEqual(new Date(2026, 9, 19));
+});
