@@ -1,21 +1,48 @@
+/**
+ * Gets the calendar day of a date as a Date at local midnight.
+ * With a time zone, the calendar day is the one in that zone, e.g. "Europe/Oslo".
+ * @param {Date} date
+ * @param {string} [timeZone]
+ * @returns {Date}
+ */
+function toCalendarDay(date, timeZone) {
+    if (!timeZone) {
+        return new Date(date.getFullYear(), date.getMonth(), date.getDate())
+    }
+
+    const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone,
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+    }).formatToParts(date)
+    const part = (type) => Number(parts.find((p) => p.type === type).value)
+
+    return new Date(part('year'), part('month') - 1, part('day'))
+}
+
 module.exports = {
     /**
      * Checks wether a certain date is a working day
-     * @param {Date} inputDate 
-     * @returns {boolean} 
+     * @param {Date} inputDate
+     * @param {{ timeZone?: string }} [options] Time zone to read the calendar day in,
+     * e.g. "Europe/Oslo". Defaults to the local time zone.
+     * @returns {boolean}
      */
-    isWorkingDay(inputDate) {
+    isWorkingDay(inputDate, options = {}) {
+        const day = toCalendarDay(inputDate, options.timeZone)
+
         // Month
-        const month = inputDate.getMonth()
+        const month = day.getMonth()
         // Date
-        const date = inputDate.getDate()
+        const date = day.getDate()
         // Day of week (Sunday - Saturday : 0 - 6)
-        const weekday = inputDate.getDay()
+        const weekday = day.getDay()
 
         /**
          * Saturday and sundays
          */
-        
+
         if (weekday === 6 || weekday === 0)
             return false
 
@@ -42,13 +69,12 @@ module.exports = {
          * We need to know which date easter sunday falls on
          * to calculate the remaining holidays
          */
-        const easter = this.getEasterSunday(inputDate.getFullYear())
+        const easter = this.getEasterSunday(day.getFullYear())
 
         /**
          * Input day is Easter Sunday
          */
-        // Use ISO8601 date format to compare dates
-        if (inputDate.toDateString() === easter.toDateString())
+        if (day.toDateString() === easter.toDateString())
             return false
 
         /**
@@ -57,49 +83,73 @@ module.exports = {
          * to setDate are relative to the latest mutation
          */
         easter.setDate(easter.getDate() - 3)
-        if (inputDate.toDateString() === easter.toDateString())
+        if (day.toDateString() === easter.toDateString())
             return false
-        
+
         /**
          * Good Friday
          */
         easter.setDate(easter.getDate() + 1)
-        if (inputDate.toDateString() === easter.toDateString())
+        if (day.toDateString() === easter.toDateString())
             return false
 
         /**
          * Easter Monday
          */
         easter.setDate(easter.getDate() + 3)
-        if (inputDate.toDateString() === easter.toDateString())
+        if (day.toDateString() === easter.toDateString())
             return false
 
         /**
          * Ascension Day
          */
         easter.setDate(easter.getDate() + 38)
-        if (inputDate.toDateString() === easter.toDateString())
+        if (day.toDateString() === easter.toDateString())
             return false
 
         /**
          * Whit Monday
          */
         easter.setDate(easter.getDate() + 11)
-        if (inputDate.toDateString() === easter.toDateString())
+        if (day.toDateString() === easter.toDateString())
             return false
 
         return true;
     },
 
     /**
+     * Gets the working day that is a number of working days after a date.
+     * The date itself is not counted, so one working day after a Friday is the next Monday.
+     * @param {Date} inputDate
+     * @param {number} workingDays
+     * @param {{ timeZone?: string }} [options] Time zone to read the calendar day in,
+     * e.g. "Europe/Oslo". Defaults to the local time zone.
+     * @returns {Date} The resulting calendar day, at local midnight
+     */
+    addWorkingDays(inputDate, workingDays, options = {}) {
+        if (!Number.isInteger(workingDays) || workingDays < 0) {
+            throw new RangeError("workingDays must be a non-negative integer.")
+        }
+
+        const day = toCalendarDay(inputDate, options.timeZone)
+        let remaining = workingDays
+        while (remaining > 0) {
+            day.setDate(day.getDate() + 1)
+            if (this.isWorkingDay(day)) remaining--
+        }
+
+        return day
+    },
+
+    /**
      * Gets the date of Easter Sunday for a given year
-     * @param {number} year 
-     * @returns {Date} 
+     * @param {number} year
+     * @returns {Date} Easter Sunday at local midnight
      */
     getEasterSunday(year) {
         try {
             year = Number( year );
-            if ( year != year ) { 
+            if ( year != year ) {
                 throw new TypeError( "Value must be a number." );
             }
             else if ( year > 275760 || year < -271820 ) {
@@ -107,7 +157,7 @@ module.exports = {
             }
         }
         catch ( e ) { console.error( e ); }
-    
+
         year = Math.floor( year );
         var c = Math.floor( year / 100 );
         var n = year - 19 * Math.floor( year / 19 );
@@ -119,12 +169,10 @@ module.exports = {
         j = j - 7 * Math.floor( j / 7 );
         var l = i - j;
         var m = 3 + Math.floor( ( l + 40 ) / 44 );
-        m = m.toString().padStart(2, '0')
         var d = l + 28 - 31 * Math.floor( m / 4 );
-        d = d.toString().padStart(2, '0')
-        var z = new Date(`${year}-${m}-${d}`)
 
-    
-        return z;
+        // Build the date in local time. Parsing "YYYY-MM-DD" gives UTC midnight, which is
+        // the previous day in time zones west of UTC.
+        return new Date(year, m - 1, d)
     }
 }

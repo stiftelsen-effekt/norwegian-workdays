@@ -1,10 +1,10 @@
 {
   "name": "norwegian-workdays",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "A package to determine norwegian workdays",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "TZ=UTC jest && TZ=Europe/Oslo jest && TZ=America/New_York jest"
   },
   "repository": {
     "type": "git",
@@ -12,7 +12,9 @@
   },
   "keywords": [
     "norway",
-    "workdays"
+    "workdays",
+    "holidays",
+    "banking days"
   ],
   "author": "Stiftelsen Effekt",
   "license": "MIT",
@@ -20,10 +22,12 @@
     "url": "https://github.com/stiftelsen-effekt/norwegian-workdays/issues"
   },
   "homepage": "https://github.com/stiftelsen-effekt/norwegian-workdays#readme",
-  "dependencies": {
-    "luxon": "^1.27.0"
-  },
   "devDependencies": {
-    "jest": "^27.0.6"
-  }
+    "jest": "^30.5.2"
+  },
+  "types": "index.d.ts",
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ]
 }
